@@ -4,11 +4,11 @@ Test2 = set([1,3])
 print(Test2.issubset(Test1))
 """
 
-def Apriori(Data_List , min_support):
+def Apriori(Data_List , min_support ,result_type):
 	
 	Data_In_Set = []
 	Item_Array_List = []
-	Remain_Array_List = []
+	Remain_Array_List = [] #this is the result
 
 	total_data_num = 0 
 	min_support_value = 0
@@ -20,7 +20,7 @@ def Apriori(Data_List , min_support):
 		for item in one_date:
 			if item not in Total_Item:
 				Total_Item.append(item)
-	min_support_value = int(min_support*total_data_num)
+	min_support_value = (min_support*total_data_num)
 	#print(Total_Item)
 	#print(Data_In_Set)
 #create the 2D arr for counting the frequence
@@ -66,9 +66,21 @@ def Apriori(Data_List , min_support):
 		if (len(Item_Array_Next)) != 0:
 			Item_Array_List.append(Item_Array_Next)
 		#print(Item_Array_Next)
+	ctr = 0 
 	for remain in Remain_Array_List :
 		print(remain)
+		ctr+=len(remain)
+	print(ctr)
 
 
-Test_Date_List = [['A','C','D'],['B','C','E'],['A','B','C','E'],['B','E']]
-Apriori(Test_Date_List,0.5)
+#Test_Data_List = [['A','C','D'],['B','C','E'],['A','B','C','E'],['B','E']]
+Test_Data_List = [
+				['a','c','d','f','g','i','m','p'],
+				['a','b','c','f','i','m','o'],
+				['b','f','h','j','o'],
+				['b','c','k','s','p'],
+				['a','c','e','f','l','m','n','p']
+				]
+
+
+Apriori(Test_Data_List,0.5)

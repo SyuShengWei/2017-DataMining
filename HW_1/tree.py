@@ -17,6 +17,7 @@ class node :
 root = node('root','root',None)
 Data_List =[['a','b','c'],['a','c','e'],['b','c'],['c']]
 
+
 for data in Data_List :
 	index_now = root
 	for item in data:
@@ -37,4 +38,36 @@ for data in Data_List :
 				index_now.next.append(new_node)
 				index_now = new_node
 
+def find_sub_all(Super_List):
+	ALL_Sub = []
+	mask = [ 0 for i in range(len(Super_List))]
+	find_sub(Super_List,mask,0,ALL_Sub)
+	return ALL_Sub
+	
+
+def find_sub (Super_List,mask,index,ALL_Sub) :
+	if index == len(Super_List) -1  :
+		elements = []
+		for i in range(0,len(Super_List)):
+			if mask[i] == 1:
+				elements.append(Super_List[i])
+		ALL_Sub.append(set(elements))
+	else:
+		mask[index] = 0 
+		find_sub(Super_List,mask,index+1,ALL_Sub)
+		mask[index] = 1
+		find_sub(Super_List,mask,index+1,ALL_Sub)	
+
+
 root.print_tree()
+'''
+mask = []
+set_List = [0,1,2,3,4,5]
+print(find_sub_all(set_List))
+print(len(find_sub_all(set_List)))
+
+
+set1 = {'a','b'}
+st = {'c'}
+print(set1|st)
+'''
