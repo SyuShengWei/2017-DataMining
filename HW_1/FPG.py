@@ -1,7 +1,3 @@
-
-
-
-
 class node :
 
 	def __init__(self , i_name, i_value, prev):
@@ -133,7 +129,7 @@ def searchTree(Root,Header_Pointer_Dic,item,sub_set,msv,FPG_Result):
 	#print("Trace Path",Traced_Path)
 #Create Cond FPTree
 	S_Root , S_HPD = createTree(Traced_Path)
-	S_Root.print_Tree()
+	#S_Root.print_Tree()
 #find frequency
 	FID = findFrequency(Traced_Path,msv)
 	#print(FID)
@@ -155,7 +151,7 @@ def FP_Growth (Data_List,min_sup,result_type = 0):
 
 	msv , Remain_Item , Rebuilded_Data = rebuildData(Data_List,min_sup)
 	Root , HPD = createTree(Rebuilded_Data)
-	Root.print_Tree()
+	#Root.print_Tree()
 	FID = findFrequency(Rebuilded_Data,msv)
 	for the_item in FID:
 		FP_Result_Dict[tuple(the_item)] = FID[the_item]
@@ -167,9 +163,9 @@ def FP_Growth (Data_List,min_sup,result_type = 0):
 ##decide result type---------------------------------------------------------------
 	Result_Return = []
 	if result_type == 0 :
-		for i in range(0,len(Remain_Item)):
-			for item in FP_Result_Dict:
-				Result_Return.append(set(item))
+		for item in FP_Result_Dict:
+			Result_Return.append(list(item))
+		#print(len(Result_Return))
 		return Result_Return
 
 	elif result_type == 1:				
@@ -187,7 +183,7 @@ def FP_Growth (Data_List,min_sup,result_type = 0):
 		print("len of result : ",len(FP_Result_Dict))	
 
 if __name__ == '__main__' :	
-	'''
+	
 	Test_Data_List = [
 				['a','c','d','f','g','i','m','p'],
 				['a','b','c','f','i','m','o'],
@@ -206,4 +202,5 @@ if __name__ == '__main__' :
 				['A','D','E'],
 				['B','C']
 				]
-	FP_Growth(Test_Data_List,0.3,1)
+	'''
+	print(FP_Growth(Test_Data_List,0.5))

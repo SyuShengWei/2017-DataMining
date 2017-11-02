@@ -1,10 +1,4 @@
-"""
-Test1 = set([1,2,3])
-Test2 = set([1,3])
-print(Test2.issubset(Test1))
-"""
-
-def Apriori(Data_List , min_support ,result_type):
+def Apriori(Data_List , min_support ,result_type = 0):
 	
 	Data_In_Set = []
 	Item_Array_List = []
@@ -66,21 +60,37 @@ def Apriori(Data_List , min_support ,result_type):
 		if (len(Item_Array_Next)) != 0:
 			Item_Array_List.append(Item_Array_Next)
 		#print(Item_Array_Next)
-	ctr = 0 
-	for remain in Remain_Array_List :
-		print(remain)
-		ctr+=len(remain)
-	print(ctr)
+##return type	
+	if result_type == 0 :
+		Result_Return = []
+		for remain in Remain_Array_List :
+			for item in remain :
+				Result_Return.append(list(item[0]))
+		return Result_Return
 
+	elif result_type == 1:
+		ctr = 0 
+		for remain in Remain_Array_List :
+			for item in remain :
+				print(item)
+			ctr+=len(remain)
+		print(ctr)
+	elif result_type == 2 :
+		ctr = 0 
+		for remain in Remain_Array_List :
+			for item in remain :
+				print(item[0])
+			ctr+=len(remain)
+		print(ctr)
 
-#Test_Data_List = [['A','C','D'],['B','C','E'],['A','B','C','E'],['B','E']]
-Test_Data_List = [
-				['a','c','d','f','g','i','m','p'],
-				['a','b','c','f','i','m','o'],
-				['b','f','h','j','o'],
-				['b','c','k','s','p'],
-				['a','c','e','f','l','m','n','p']
-				]
+if __name__ == '__main__' : 
+	#Test_Data_List = [['A','C','D'],['B','C','E'],['A','B','C','E'],['B','E']]
+	Test_Data_List = [
+					['a','c','d','f','g','i','m','p'],
+					['a','b','c','f','i','m','o'],
+					['b','f','h','j','o'],
+					['b','c','k','s','p'],
+					['a','c','e','f','l','m','n','p']
+					]
 
-
-Apriori(Test_Data_List,0.5)
+	print(Apriori(Test_Data_List,0.5))
