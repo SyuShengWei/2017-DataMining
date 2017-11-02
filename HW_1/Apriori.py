@@ -1,5 +1,16 @@
+def readInfile(filename):
+	Return_Data_List = []
+	with open(filename,'r') as Infile:
+		Data_List = Infile.readlines()
+		for the_Line in Data_List:
+			the_Line = the_Line.replace('\n','')
+			the_data = the_Line.split(',')
+			Return_Data_List.append(the_data)
+	return Return_Data_List
+
+
 def Apriori(Data_List , min_support ,result_type = 0):
-	
+	print("In A")
 	Data_In_Set = []
 	Item_Array_List = []
 	Remain_Array_List = [] #this is the result
@@ -10,17 +21,20 @@ def Apriori(Data_List , min_support ,result_type = 0):
 	Total_Item = []
 	for one_date in Data_List :
 		Data_In_Set.append(set(one_date))
+		#print(set(one_date))
 		total_data_num += 1
 		for item in one_date:
 			if item not in Total_Item:
 				Total_Item.append(item)
 	min_support_value = (min_support*total_data_num)
+	print('min',min_support_value)
 	#print(Total_Item)
 	#print(Data_In_Set)
 #create the 2D arr for counting the frequence
 	Item_Array0 = []
+	#print(Total_Item)
 	for item in Total_Item:
-		Item_Array0.append([set(item),0])
+		Item_Array0.append([set([item]),0])
 	#print(Item_Array[0][0])
 	Item_Array_List.append(Item_Array0)
 #start recursive find the relation
@@ -46,6 +60,7 @@ def Apriori(Data_List , min_support ,result_type = 0):
 			for j in range(i+1,len(Remain_Array)):
 				if_get = 1
 				sub_set = Remain_Array[i][0].union(Remain_Array[j][0])
+				#print(Remain_Array[i][0].union(Remain_Array[j][0]))
 				for removed in Remove_Array:
 					if removed[0].issubset(sub_set):
 						if_get = 0 
@@ -92,5 +107,6 @@ if __name__ == '__main__' :
 					['b','c','k','s','p'],
 					['a','c','e','f','l','m','n','p']
 					]
+	Test_Data_List = readInfile('Book_ranking1.csv')
 
-	print(Apriori(Test_Data_List,0.5))
+	print(Apriori(Test_Data_List,0.001))

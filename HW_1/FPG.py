@@ -1,3 +1,14 @@
+def readInfile(filename):
+	Return_Data_List = []
+	with open(filename,'r') as Infile:
+		Data_List = Infile.readlines()
+		for the_Line in Data_List:
+			the_Line = the_Line.replace('\n','')
+			the_data = the_Line.split(',')
+			Return_Data_List.append(the_data)
+	return Return_Data_List
+
+
 class node :
 
 	def __init__(self , i_name, i_value, prev):
@@ -80,7 +91,6 @@ def findFrequencyOneItem(Data_List,min_sup , test = 0):
 
 	min_sup_value = min_sup * total_data_num
 	Sorted_Item_by_fre = sorted(Items_Dict , key = Items_Dict.get,reverse = True)	
-	
 	for item in Sorted_Item_by_fre :
 		if Items_Dict[item] >= min_sup_value:
 			Remain_Item.append(item)
@@ -136,6 +146,7 @@ def searchTree(Root,Header_Pointer_Dic,item,sub_set,msv,FPG_Result):
 	if len(FID) != 0:
 		for the_item in FID:
 			new_set = [the_item]+sub_set
+			#print(new_set)
 			FPG_Result[tuple(new_set)] = FID[the_item]
 		#For each frequence item ,Create
 		for sub_item in S_HPD:
@@ -150,20 +161,22 @@ def FP_Growth (Data_List,min_sup,result_type = 0):
 	FP_Result_Dict = {}
 
 	msv , Remain_Item , Rebuilded_Data = rebuildData(Data_List,min_sup)
+	#print(msv , sorted(Remain_Item))
 	Root , HPD = createTree(Rebuilded_Data)
 	#Root.print_Tree()
 	FID = findFrequency(Rebuilded_Data,msv)
 	for the_item in FID:
-		FP_Result_Dict[tuple(the_item)] = FID[the_item]
+		#print(tuple([the_item]))
+		FP_Result_Dict[tuple([the_item])] = FID[the_item]
 ##Scan Pattern Base in Reverse Order of frequency
 	for item in HPD:
 		searchTree(Root,HPD,item,[item],msv,FP_Result_Dict)
 
-
+	#print((FP_Result_Dict))
 ##decide result type---------------------------------------------------------------
 	Result_Return = []
 	if result_type == 0 :
-		for item in FP_Result_Dict:
+		for item in FP_Result_Dict.keys():
 			Result_Return.append(list(item))
 		#print(len(Result_Return))
 		return Result_Return
@@ -203,4 +216,6 @@ if __name__ == '__main__' :
 				['B','C']
 				]
 	'''
-	print(FP_Growth(Test_Data_List,0.5))
+	Test_Data_List = readInfile('Book_ranking1.csv')
+
+	print(FP_Growth(Test_Data_List,0.001))
