@@ -39,9 +39,9 @@ def createHT(Hash,Candidata_List,level):
 ##create_tree 
 	for candidate_set in Candidata_List :
 		#print(candidate_set)
+		#print(level)
 		Ptr_Node = Root
 		HV_List = []
-		lay = 1
 		for item in candidate_set:
 			HV_List.append(Hash.search(item))
 		for i in range(len(HV_List)):
@@ -54,14 +54,13 @@ def createHT(Hash,Candidata_List,level):
 					Node_Dict[tuple(candidate_set)] = 0
 				else:
 					Ptr_Node = new_Node
-					lay+=1
 			else:
 				if i == level-1 :
 					Ptr_Node.next[HV_List[i]].Data.append(candidate_set)
 					Node_Dict[tuple(candidate_set)] = 0
 				else:
 					Ptr_Node = Ptr_Node.next[HV_List[i]]
-					lay+=1
+
 		
 	return Root , Node_Dict
 #				12356.  root 3.    [].     
@@ -77,16 +76,31 @@ def traceTree(data_line,node,level,preset,the_hash,Node_Dict):
 						Node_Dict[tuple(the_sub_set)] +=1
 	else:
 		if len(data_line) > 3:
-			for i in range(0,3):
-				hash_value = the_hash.search(data_line[i])
-				if node.next[hash_value] != None:
-					next_node = node.next[hash_value]
-					preset_next = preset+[data_line[i]]
-					if len(data_line) > i+1:	
-						line_next = data_line[i+1:]
-						if(len(preset_next) + len(line_next)) >= level :
-							traceTree(line_next,next_node,level,preset_next,the_hash,Node_Dict)
-				
+			remain_data = list(data_line)
+			while(len(remain_data)>3):
+				for i in range(0,3):
+					hash_value = the_hash.search(remain_data[i])
+					if node.next[hash_value] != None:
+						next_node = node.next[hash_value]
+						preset_next = preset+[remain_data[i]]
+						if len(remain_data) > i+1:	
+							line_next = remain_data[i+1:]
+							if(len(preset_next) + len(line_next)) >= level :
+								traceTree(line_next,next_node,level,preset_next,the_hash,Node_Dict)
+				remain_data = remain_data[3:]
+			if len(remain_data) > 0:
+				for i in range(0,len(remain_data)):
+					hash_value = the_hash.search(remain_data[i])
+					if node.next[hash_value] != None:
+						next_node = node.next[hash_value]
+						preset_next = preset+[remain_data[i]]
+						try:	
+							line_next = remain_data[i+1:]
+							if(len(preset_next) + len(line_next)) >= level :
+								traceTree(line_next,next_node,level,preset_next,the_hash,Node_Dict)
+						except:
+							return
+
 		else:
 			for i in range(0,len(data_line)):
 				hash_value = the_hash.search(data_line[i])
@@ -103,18 +117,21 @@ def traceTree(data_line,node,level,preset,the_hash,Node_Dict):
 
 
 def HT_Apriori(Data_List , min_sup,result_type = 0):
+	print("Apriori(Hash)")
 	Result = []
-
 	total_data_num = 0
 ##Prepare one item frequence
 	One_Item_Dict = {}
-	for data_line in Data_List :
+
+	for transaction in Data_List:
 		total_data_num += 1
-		for item in data_line :
+		for item in transaction :
 			One_Item_Dict[item] = One_Item_Dict.get(item,0) + 1
 
+	#print('One',One_Item_Dict)
+
 	msv = min_sup * total_data_num
-	
+	print('min_sup_value :',msv)
 	Frequency_One_Item_Dict = {}
 	for item in One_Item_Dict:
 		if One_Item_Dict[item] >= msv :
@@ -123,6 +140,8 @@ def HT_Apriori(Data_List , min_sup,result_type = 0):
 	#print('Sorted',Sorted_Frequency_One_Item)
 	for item in Sorted_Frequency_One_Item:
 		Result.append([[item],Frequency_One_Item_Dict[item]])
+		#print(([[item],Frequency_One_Item_Dict[item]]))
+
 #rebuild data in sorted
 	Sorted_Data = []
 	for data_line in Data_List :
@@ -140,9 +159,10 @@ def HT_Apriori(Data_List , min_sup,result_type = 0):
 	for i in range(len(Sorted_Frequency_One_Item)-1):
 		for j in range(i+1,len(Sorted_Frequency_One_Item)):
 			Two_Item.append([Sorted_Frequency_One_Item[i],Sorted_Frequency_One_Item[j]])
-	#print(Two_Item)
 	ItemSet_Array_Next = []
 	ItemSet_Array_Next.append(Two_Item)
+
+	#print('Next',Two_Item)
 
 	for ItemSet_Array in ItemSet_Array_Next:
 
@@ -172,11 +192,20 @@ def HT_Apriori(Data_List , min_sup,result_type = 0):
 					if_get = 0
 				if if_get==1 and sub_set not in Item_Set_Next:
 					Item_Set_Next.append(sub_set)
+
 		Item_Array_Next = []
 		for the_set in Item_Set_Next :
-			Item_Array_Next.append(list(the_set))
+			new_set = []
+			for item in Sorted_Frequency_One_Item:
+				if item in the_set:
+					new_set.append(item)
+			Item_Array_Next.append(new_set)
 		if (len(Item_Array_Next) )!= 0 :
 			ItemSet_Array_Next.append(Item_Array_Next)
+			#print(' ')
+			#print("NEXT",Item_Array_Next)
+			#print(' ')
+		level +=1
 ##========Result=======================================##
 	if result_type == 0 :
 		Result_Return = []
@@ -185,7 +214,7 @@ def HT_Apriori(Data_List , min_sup,result_type = 0):
 		return Result_Return
 	elif result_type == 1:
 		print(Result)
-		print(len(Result))
+		print("total items : ",len(Result))
 	elif result_type == 2 :
 		ctr = 0 
 		for remain in Remain_Array_List :
@@ -204,11 +233,11 @@ def readInfile(filename):
 
 if __name__ == "__main__" :
 	Test_Data_List = [
-				['a','c','d','f','g','i','m','p'],
+				['a','b','v','f','g','i','m','p'],
 				['a','b','c','f','i','m','o'],
 				['b','f','h','j','o'],
 				['b','c','k','s','p'],
-				['a','c','e','f','l','m','n','p']
+				['a','c','b','f','l','m','n','p']
 				]
-	Test_Data_List = readInfile('Book_ranking1.csv')
-	(HT_Apriori(Test_Data_List,0.001,1))
+	#Test_Data_List = readInfile('Py_IBM_1_1_0.1.csv')
+	(HT_Apriori(Test_Data_List,0.4,1))
