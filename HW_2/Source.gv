@@ -1,0 +1,33 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<Human Factors Engineering &le; 0.5<br/>gini = 0.428<br/>samples = 100<br/>value = [69, 31]<br/>class = [0]Industrial>, fillcolor="#e581398c"] ;
+1 [label=<Java &le; 0.5<br/>gini = 0.255<br/>samples = 20<br/>value = [3, 17]<br/>class = [1]Information>, fillcolor="#399de5d2"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<Management Math &le; 0.5<br/>gini = 0.48<br/>samples = 5<br/>value = [3, 2]<br/>class = [0]Industrial>, fillcolor="#e5813955"] ;
+1 -> 2 ;
+3 [label=<Service Management &le; 0.5<br/>gini = 0.444<br/>samples = 3<br/>value = [1, 2]<br/>class = [1]Information>, fillcolor="#399de57f"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 1<br/>value = [1, 0]<br/>class = [0]Industrial>, fillcolor="#e58139ff"] ;
+3 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 2<br/>value = [0, 2]<br/>class = [1]Information>, fillcolor="#399de5ff"] ;
+3 -> 5 ;
+6 [label=<gini = 0.0<br/>samples = 2<br/>value = [2, 0]<br/>class = [0]Industrial>, fillcolor="#e58139ff"] ;
+2 -> 6 ;
+7 [label=<gini = 0.0<br/>samples = 15<br/>value = [0, 15]<br/>class = [1]Information>, fillcolor="#399de5ff"] ;
+1 -> 7 ;
+8 [label=<Java &le; 0.5<br/>gini = 0.289<br/>samples = 80<br/>value = [66, 14]<br/>class = [0]Industrial>, fillcolor="#e58139c9"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label=<Management Math &le; 0.5<br/>gini = 0.465<br/>samples = 38<br/>value = [24, 14]<br/>class = [0]Industrial>, fillcolor="#e581396a"] ;
+8 -> 9 ;
+10 [label=<Service Management &le; 0.5<br/>gini = 0.444<br/>samples = 21<br/>value = [7, 14]<br/>class = [1]Information>, fillcolor="#399de57f"] ;
+9 -> 10 ;
+11 [label=<gini = 0.0<br/>samples = 7<br/>value = [7, 0]<br/>class = [0]Industrial>, fillcolor="#e58139ff"] ;
+10 -> 11 ;
+12 [label=<gini = 0.0<br/>samples = 14<br/>value = [0, 14]<br/>class = [1]Information>, fillcolor="#399de5ff"] ;
+10 -> 12 ;
+13 [label=<gini = 0.0<br/>samples = 17<br/>value = [17, 0]<br/>class = [0]Industrial>, fillcolor="#e58139ff"] ;
+9 -> 13 ;
+14 [label=<gini = 0.0<br/>samples = 42<br/>value = [42, 0]<br/>class = [0]Industrial>, fillcolor="#e58139ff"] ;
+8 -> 14 ;
+}
