@@ -1,5 +1,6 @@
 import csv
 import math
+import pandas as pd
 
 class Node :
     def __init__ (self,name):
@@ -39,8 +40,10 @@ def growGraphByInfile(filename):
             if the_node_2 == None :
                 the_node_2 = Node(row[1])
                 List_Node.append(the_node_2)
-            the_node_1.out_node.append(the_node_2)
-            the_node_2.in_node.append(the_node_1)
+            if findNode(the_node_2.name,the_node_1.out_node) == None:
+                the_node_1.out_node.append(the_node_2)
+            if findNode(the_node_1.name,the_node_2.in_node)  == None :
+                the_node_2.in_node.append(the_node_1)
     List_Node.sort(key = lambda node: int(node.name)) 
     return List_Node
 
@@ -55,7 +58,7 @@ def copyNode (Graph):
         New_List.append(new_Node)
     return New_List
 
-def Hit(Graph,e = 0.01) :
+def Hit(Graph,e = 0.01,if_csv = 0) :
     iteration = 0
     for node in Graph:
         node.authority = 1
@@ -98,17 +101,23 @@ def Hit(Graph,e = 0.01) :
         else:
             #print(e_auth+e_hub)
             Graph_Old = copyNode(Graph)
+    if if_csv != 0:
+        Hit_result = []
+        for node in Graph_Old :
+            Hit_result.append([node.name,node.authority,node.hub])
+        Result_DF = pd.DataFrame(Hit_result)
+        Result_DF.columns = ['Node','Auth','Hub']
+        Result_DF.to_csv('Hit_'+filename+'.csv',index = False)
 
 if __name__ == '__main__' :
 
-    filename = 'graph_3.txt'
+    filename = 'graph_4.txt'
     Node_Graph = growGraphByInfile(filename)
     for node in Node_Graph :
         print(node,"Out:",node.out_node,"In:",node.in_node) 
     
 
-    Hit(Node_Graph)
+    Hit(Node_Graph,if_csv = 1)
     for node in Node_Graph :
         print(node,"Auth:",node.authority,"Hub:",node.hub)
-
-
+    

@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import numpy.linalg as npl
 import math
+import pandas as pd
 
 class Node :
     def __init__ (self,name):
@@ -38,8 +39,10 @@ def growGraphByInfile(filename):
             if the_node_2 == None :
                 the_node_2 = Node(row[1])
                 List_Node.append(the_node_2)
-            the_node_1.out_node.append(the_node_2)
-            the_node_2.in_node.append(the_node_1)
+            if findNode(the_node_2.name,the_node_1.out_node) == None:
+                the_node_1.out_node.append(the_node_2)
+            if findNode(the_node_1.name,the_node_2.in_node)  == None :
+                the_node_2.in_node.append(the_node_1)
     List_Node.sort(key = lambda node: int(node.name)) 
     return List_Node
 
@@ -64,13 +67,18 @@ def graphToMatrix(Graph):
             Matrix_Graph[int(node.name)-1][int(out_node.name)-1] = 1
         for in_node in node.in_node:
             Matrix_Graph[int(in_node.name)-1][int(node.name)-1] = 1
-
-    #for line in Matrix_Graph:
-    #   print(line)
     return Matrix_Graph
 
-def PageRank (node_M,d = 0.85,e = 0.01,print_iter = 0):
+def PageRank (Graph,d = 0.85,e = 0.01,print_iter = 0,if_csv = 0):
 
+    Num_Node = len(Graph)
+    node_M = [[0 for i in range(Num_Node)] for j in range(Num_Node)]
+    for node in Graph:
+        for out_node in node.out_node:
+            node_M[int(node.name)-1][int(out_node.name)-1] = 1
+        for in_node in node.in_node:
+            node_M[int(in_node.name)-1][int(node.name)-1] = 1
+    
     #node_M = [[0,1,1],[0,0,1],[1,0,0]]
     Norm_node_M = []
     for line in node_M:
@@ -88,7 +96,8 @@ def PageRank (node_M,d = 0.85,e = 0.01,print_iter = 0):
     uni_Matrix = np.ones((r, c))
     Z = (1 / r) * uni_Matrix
     A = d * P_Trans + (1-d)*Z 
-    Xt_1 = np.ones((c, 1)) /r
+    Xt_1 = np.ones((c, 1)) /r 
+    print(P_Trans)
     t = 0
     while True:
         t += 1
@@ -99,6 +108,15 @@ def PageRank (node_M,d = 0.85,e = 0.01,print_iter = 0):
 
         if Xe < e : break
         else:  Xt_1 = Xt
+    
+    if if_csv != 0 :
+        PageRank_Result = []
+        for i in range(Num_Node):
+            PageRank_Result.append([Graph[i],float(Xt[i])])
+        #print(PageRank_Result)
+        Result_DF = pd.DataFrame(PageRank_Result)
+        Result_DF.columns = ['Node','PageRank']
+        Result_DF.to_csv('PageRank_'+filename+'.csv',index = False)
     return(Xt)        
     
 if __name__ == '__main__' :
@@ -107,7 +125,6 @@ if __name__ == '__main__' :
     Node_Graph = growGraphByInfile(filename)
     for node in Node_Graph :
         print(node,"Out:",node.out_node,"In:",node.in_node) 
-
-    Node_Matrix = graphToMatrix(Node_Graph)
-    rank_value = PageRank(Node_Matrix,print_iter =1)
+    
+    rank_value = PageRank(Node_Graph,print_iter =1,if_csv = 1)
     print(rank_value)

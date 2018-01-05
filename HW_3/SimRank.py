@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import numpy.linalg as npl
 import math
+import pandas as pd
 
 class Node :
     def __init__ (self,name):
@@ -38,8 +39,10 @@ def growGraphByInfile(filename):
             if the_node_2 == None :
                 the_node_2 = Node(row[1])
                 List_Node.append(the_node_2)
-            the_node_1.out_node.append(the_node_2)
-            the_node_2.in_node.append(the_node_1)
+            if findNode(the_node_2.name,the_node_1.out_node) == None:
+                the_node_1.out_node.append(the_node_2)
+            if findNode(the_node_1.name,the_node_2.in_node)  == None :
+                the_node_2.in_node.append(the_node_1)
     List_Node.sort(key = lambda node: int(node.name)) 
     return List_Node
 
@@ -68,8 +71,14 @@ def graphToMatrix(Graph):
     #   print(line)
     return Matrix_Graph
 
-def SimRank(node_M, C = 0.5,e = 0.01,print_iter = 0):
-    Num_Node = len(node_M)   
+def SimRank(Graph, C = 0.5,e = 0.01,print_iter = 0,if_csv = 0):
+    Num_Node = len(Graph)
+    node_M = [[0 for i in range(Num_Node)] for j in range(Num_Node)]
+    for node in Graph:
+        for out_node in node.out_node:
+            node_M[int(node.name)-1][int(out_node.name)-1] = 1
+        for in_node in node.in_node:
+            node_M[int(in_node.name)-1][int(node.name)-1] = 1
 
     A_node_M = [[0 for i in range(Num_Node)] for j in range(Num_Node)]
     for i in range(Num_Node):
@@ -82,7 +91,6 @@ def SimRank(node_M, C = 0.5,e = 0.01,print_iter = 0):
 
     W = np.mat(A_node_M)
     I = np.eye(Num_Node,Num_Node)
-    M = np.mat(node_M)
     Et_1 = np.eye(Num_Node,Num_Node)
     t = 0 
     while True :
@@ -95,12 +103,20 @@ def SimRank(node_M, C = 0.5,e = 0.01,print_iter = 0):
 
         if print_iter == 1 :
             print(t,error)
-
+            print(Et)
         if error < e :
             break
         else:
-            print(Et)
             Et_1 = Et
+    if if_csv != 0:
+        SimRank_result = []
+        Node_Title = ['Node']
+        for i in range(Num_Node):
+            SimRank_result.append([Graph[i]]+Et[i].tolist()[0])
+            Node_Title.append(str(Graph[i]))
+        Result_DF = pd.DataFrame(SimRank_result)
+        Result_DF.columns = Node_Title
+        Result_DF.to_csv('SimRank_'+filename+'.csv',index = False)
     return Et
 
 
@@ -113,6 +129,6 @@ if __name__ == '__main__' :
     for node in Node_Graph :
         print(node,"Out:",node.out_node,"In:",node.in_node) 
 
-    Node_Matrix = graphToMatrix(Node_Graph)
-    SR = SimRank(Node_Matrix,print_iter =1)
+    SR = SimRank(Node_Graph,print_iter =0,if_csv = 1)
     print(SR)
+    print(type(SR))
